@@ -185,6 +185,11 @@ namespace Kestrel
             _frame.OnSendingHeaders(callback, state);
         }
 
+        void IHttpResponseFeature.OnResponseCompleted(Action<object> callback, object state)
+        {
+            _frame.OnResponseCompleted(callback, state);
+        }
+
         bool IHttpUpgradeFeature.IsUpgradableRequest
         {
             get

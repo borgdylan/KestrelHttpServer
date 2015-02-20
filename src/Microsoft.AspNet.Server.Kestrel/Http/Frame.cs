@@ -64,7 +64,9 @@ namespace Microsoft.AspNet.Server.Kestrel.Http
         */
 
         List<KeyValuePair<Action<object>, object>> _onSendingHeaders;
+        List<KeyValuePair<Action<object>, object>> _onResponseCompleted;
         object _onSendingHeadersSync = new Object();
+        object _onResponseCompletedSync = new Object();
 
         public Frame(ConnectionContext context) : base(context)
         {
@@ -200,6 +202,18 @@ namespace Microsoft.AspNet.Server.Kestrel.Http
             }
         }
 
+        public void OnResponseCompleted(Action<object> callback, object state)
+        {
+            lock (_onResponseCompletedSync)
+            {
+                if (_onResponseCompleted == null)
+                {
+                    _onResponseCompleted = new List<KeyValuePair<Action<object>, object>>();
+                }
+                _onResponseCompleted.Add(new KeyValuePair<Action<object>, object>(callback, state));
+            }
+        }
+
         private void FireOnSendingHeaders()
         {
             List<KeyValuePair<Action<object>, object>> onSendingHeaders = null;
@@ -211,6 +225,23 @@ namespace Microsoft.AspNet.Server.Kestrel.Http
             if (onSendingHeaders != null)
             {
                 foreach (var entry in onSendingHeaders)
+                {
+                    entry.Key.Invoke(entry.Value);
+                }
+            }
+        }
+
+        private void FireOnResponseCompleted()
+        {
+            List<KeyValuePair<Action<object>, object>> onResponseCompleted = null;
+            lock (_onResponseCompletedSync)
+            {
+                onResponseCompleted = _onResponseCompleted;
+                _onResponseCompleted = null;
+            }
+            if (onResponseCompleted != null)
+            {
+                foreach (var entry in onResponseCompleted)
                 {
                     entry.Key.Invoke(entry.Value);
                 }
@@ -302,6 +333,8 @@ namespace Microsoft.AspNet.Server.Kestrel.Http
         public void ProduceEnd(Exception ex)
         {
             ProduceStart();
+
+            FireOnResponseCompleted();
 
             if (!_keepAlive)
             {
