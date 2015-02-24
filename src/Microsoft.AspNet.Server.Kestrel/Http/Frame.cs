@@ -243,7 +243,14 @@ namespace Microsoft.AspNet.Server.Kestrel.Http
             {
                 foreach (var entry in onResponseCompleted)
                 {
-                    entry.Key.Invoke(entry.Value);
+                    try
+                    {
+                        entry.Key.Invoke(entry.Value);
+                    }
+                    catch
+                    {
+                        // Ignore exceptions
+                    }
                 }
             }
         }
