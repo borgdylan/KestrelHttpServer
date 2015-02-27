@@ -1,21 +1,21 @@
 {
-    "version": "1.0.0-*",
-    "dependencies": {
-        "xunit.runner.kre": "1.0.0-*",
-        "Microsoft.AspNet.Server.Kestrel": "1.0.0-*"
-    },
-    "frameworks": {
-        "aspnet50": { },
-        "aspnetcore50": {
-            "dependencies": {
-                "System.Net.Sockets": "4.0.0-beta-*",
-                "System.Runtime.Handles": "4.0.0-beta-*",
-                "System.IO": "4.0.10-beta-*"
-            }
-        }
-    },
-    "commands": {
-        "run": "xunit.runner.kre",
-        "test": "xunit.runner.kre"
+  "version": "1.0.0-beta3",
+  "dependencies": {
+    "xunit.runner.kre": "1.0.0-beta3",
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta3"
+  },
+  "frameworks": {
+    "aspnet50": {},
+    "aspnetcore50": {
+      "dependencies": {
+        "System.Net.Sockets": "4.0.0-beta-22605",
+        "System.Runtime.Handles": "4.0.0-beta-22605",
+        "System.IO": "4.0.10-beta-22605"
+      }
     }
+  },
+  "commands": {
+    "run": "xunit.runner.kre",
+    "test": "xunit.runner.kre"
+  }
 }
